@@ -109,12 +109,16 @@ Refer to the llama.cpp documentation for full API details.
 
 ```
 yapper/
+  src/
+    server.js       - Express backend
+    install.js      - Installation script
+  config/
+    llama-flags.json  - Flag definitions with defaults
   public/           - Web UI frontend
-  models/           - GGUF model files
-  llama.cpp/        - llama.cpp source (if built locally)
-  llama-flags.json  - Flag definitions with defaults
-  server.js         - Express backend
-  install.js        - Installation script
+  models/           - GGUF model files (auto-created)
+  llama.cpp/        - llama.cpp binaries (auto-created)
+  start.bat         - Windows startup script
+  start.sh          - Unix startup script
   package.json      - Dependencies
 ```
 
