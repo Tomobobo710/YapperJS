@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Llama.cpp WebUI - Complete Control</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+         <h1>🦙 Llama.cpp WebUI</h1>
+         <p>Complete control over all server flags and options</p>
+         <div class="header-tabs">
+             <button class="tab-btn active" data-tab="control">Control Panel</button>
+             <button class="tab-btn" data-tab="logs">Server Logs</button>
+         </div>
+     </header>
+
+     <div class="container">
+        <div class="main-content">
+            <div class="control-panel">
+                <div class="server-controls">
+                    <h2>Server Control</h2>
+                    <div class="status-display">
+                        <span id="server-status">STOPPED</span>
+                    </div>
+                    <div class="control-buttons">
+                        <button id="start-btn" class="btn btn-success">Start Server</button>
+                        <button id="stop-btn" class="btn btn-danger disabled">Stop Server</button>
+                        <button id="open-chat-btn" class="btn btn-primary" disabled>Open Chat UI</button>
+                    </div>
+                    <div class="command-preview">
+                        <h3>Command Preview</h3>
+                        <pre id="command-display">llama-server [waiting for configuration]</pre>
+                    </div>
+                </div>
+
+                <form id="server-config">
+                    <h2>Server Configuration</h2>
+
+                    <div id="models-warning" style="display: none;" class="warning-box">
+                        <strong>⚠️ No models found</strong>
+                        <p>Add .gguf files to the <code>models/</code> directory to get started.</p>
+                    </div>
+
+                    <div class="form-section">
+                         <h3>Essential Settings</h3>
+                         <div class="form-grid">
+                             <div class="form-group">
+                                 <label for="model">Model <span class="required">*</span></label>
+                                 <select id="model" name="model" required>
+                                     <option value="">-- Select a model --</option>
+                                 </select>
+                                 <small>Available GGUF model files</small>
+                             </div>
+                         </div>
+                    </div>
+                    <!-- Dynamic sections will be inserted here -->
+                </form>
+
+                <div class="logs-panel">
+                    <h2>Server Logs</h2>
+                    <div id="logs-container"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="api-panel">
+            <h2>API Testing</h2>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="api-endpoint">Endpoint</label>
+                    <select id="api-endpoint">
+                        <option value="/v1/chat/completions">/v1/chat/completions</option>
+                        <option value="/v1/completions">/v1/completions</option>
+                        <option value="/v1/embeddings">/v1/embeddings</option>
+                        <option value="/v1/models">/v1/models</option>
+                        <option value="/health">/health</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="api-request">Request Body</label>
+                    <textarea id="api-request" rows="8"></textarea>
+                </div>
+            </div>
+            <button id="test-api-btn" class="btn btn-primary">Test API</button>
+            <div class="api-response" id="api-response"></div>
+        </div>
+
+        <!-- Server Logs Tab -->
+        <div id="logs-tab" class="tab-content" style="display: none;">
+            <div class="logs-full">
+                <h2>Server Logs</h2>
+                <div id="logs-container-full"></div>
+            </div>
+        </div>
+        </div>
+
+        <!-- Modal for alerts/notifications -->
+    <div id="modal-overlay" class="modal-overlay"></div>
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modal-title"></h3>
+                <button class="modal-close" id="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="modal-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button id="modal-btn-cancel" class="btn btn-secondary">Cancel</button>
+                <button id="modal-btn-ok" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dynamic-ui.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

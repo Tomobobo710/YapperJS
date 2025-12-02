@@ -1,0 +1,23 @@
+{
+  "name": "yapper",
+  "version": "1.0.0",
+  "description": "A comprehensive web UI wrapper for llama.cpp server with full flag control and preset model support",
+  "main": "server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "install-llama": "node src/install.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "adm-zip": "^0.5.10",
+    "open": "^9.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "keywords": ["llama-cpp", "webui", "wrapper", "ai", "llm", "inference"],
+  "author": "Tomobobo710",
+  "license": "MIT"
+}

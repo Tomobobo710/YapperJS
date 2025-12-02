@@ -1,0 +1,8 @@
+node_modules/
+llama.cpp/
+models/
+*.log
+.env
+.DS_Store
+*.zip
+*.tar.gz
