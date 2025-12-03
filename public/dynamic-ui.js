@@ -40,7 +40,21 @@ function generateDynamicUI() {
   const existingSections = form.querySelectorAll('.form-section.dynamic-section');
   existingSections.forEach(s => s.remove());
 
-  // Generate sections (skip essential as it's already there)
+  // Add remaining essential flags to the existing essential section
+  if (sections['essential']) {
+    const essentialSection = form.querySelector('.form-section');
+    const essentialGrid = essentialSection.querySelector('.form-grid');
+    
+    for (const flag of sections['essential']) {
+      // Skip model since it's already there
+      if (flag.name !== 'model') {
+        const control = createFormControl(flag);
+        essentialGrid.appendChild(control);
+      }
+    }
+  }
+
+  // Generate other sections (skip essential and info)
   for (const section of sortedSections) {
     if (section === 'essential' || section === 'info') continue;
     
