@@ -2,6 +2,8 @@
 
 A comprehensive web UI wrapper for llama.cpp server with full flag control, preset model support, and streamlined inference configuration.
 
+<img width="1476" height="1563" alt="image" src="https://github.com/user-attachments/assets/07235113-863b-4e34-9199-a677a8cba007" />
+
 ## Overview
 
 Yapper provides an intuitive interface for managing llama.cpp server instances. It exposes all 191 command-line flags with sensible defaults, supports 11 built-in model presets for quick setup, and intelligently filters which arguments are passed to the server based on user configuration.
