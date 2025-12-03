@@ -128,17 +128,30 @@ app.post('/start-server', async (req, res) => {
       }
     }
 
-    console.log(`Starting llama-server with ${args.length} arguments`);
-    llamaServerProcess = spawn(serverPath, args, {
-      stdio: 'pipe',
-      detached: false
+    let serverReady = false;
+
+    try {
+      llamaServerProcess = spawn(serverPath, args, {
+        stdio: ['ignore', 'pipe', 'pipe']
+      });
+    } catch (spawnError) {
+      serverStatus = 'stopped';
+      return res.status(500).json({ error: `Failed to spawn process: ${spawnError.message}` });
+    }
+
+    llamaServerProcess.on('error', (err) => {
+      if (!serverReady) {
+        serverReady = true;
+        serverStatus = 'stopped';
+        res.status(500).json({ error: `Process error: ${err.message}` });
+      }
     });
 
     llamaServerProcess.stdout.on('data', (data) => {
       const message = data.toString().trim();
       if (message) {
         serverLogs.push({ type: 'stdout', message, timestamp: new Date() });
-        console.log('[llama-server stdout]', message);
+        console.log('[llama-server]', message);
       }
     });
 
@@ -146,7 +159,13 @@ app.post('/start-server', async (req, res) => {
       const message = data.toString().trim();
       if (message) {
         serverLogs.push({ type: 'stderr', message, timestamp: new Date() });
-        console.log('[llama-server stderr]', message);
+        console.log('[llama-server]', message);
+        
+        if (!serverReady && message.includes('listening on')) {
+          serverReady = true;
+          serverStatus = 'running';
+          res.json({ success: true, message: 'Server started successfully!' });
+        }
       }
     });
 
@@ -157,11 +176,14 @@ app.post('/start-server', async (req, res) => {
         message: `Process exited with code ${code}`, 
         timestamp: new Date() 
       });
-      console.log(`llama-server exited with code ${code}`);
+      
+      if (!serverReady) {
+        serverReady = true;
+        res.status(500).json({ error: `Server process exited with code ${code}` });
+      }
+      
       llamaServerProcess = null;
     });
-
-    res.json({ success: true, message: 'Server starting...' });
   } catch (error) {
     console.error('Error starting server:', error);
     serverStatus = 'stopped';
@@ -176,10 +198,18 @@ app.post('/stop-server', (req, res) => {
   }
 
   try {
-    process.kill(-llamaServerProcess.pid);
+    // Try to kill the process gracefully
+    // On Windows, this kills the process directly
+    // On Unix, this sends SIGTERM to the process group
+    if (process.platform === 'win32') {
+      process.kill(llamaServerProcess.pid);
+    } else {
+      process.kill(-llamaServerProcess.pid);
+    }
     res.json({ success: true, message: 'Server stop signal sent' });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error('Error stopping server:', error.message);
+    res.status(500).json({ error: `Failed to stop server: ${error.message}` });
   }
 });
 
